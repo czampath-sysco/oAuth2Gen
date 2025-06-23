@@ -59,3 +59,47 @@ A simple, self-contained Node.js web application to generate OAuth2/OIDC access 
 ## License
 
 ISC
+
+---
+
+## Standalone Executable Distribution
+
+This app can be packaged as a single executable for Windows, Linux, and Mac using [`pkg`](https://github.com/vercel/pkg).
+
+### 1. Install pkg
+
+```
+npm install -g pkg
+```
+
+### 2. Build for All Platforms
+
+```
+npm run build:all
+```
+
+- Windows: `dist/oauth2gen-win.exe`
+- Linux: `dist/oauth2gen-linux`
+- Mac: `dist/oauth2gen-mac`
+
+Or build for a specific platform:
+
+```
+npm run build:win   # Windows
+npm run build:linux # Linux
+npm run build:mac   # Mac
+```
+
+### 3. Run the Executable
+
+- On Windows: `oauth2gen-win.exe`
+- On Linux/Mac: `./oauth2gen-linux` or `./oauth2gen-mac`
+
+The app will open in your browser at [http://localhost:8080](http://localhost:8080).
+
+---
+
+## Notes
+- No need to install Node.js on the target machine.
+- All dependencies are bundled.
+- For best results, build on the target OS or use CI/CD for cross-compilation.

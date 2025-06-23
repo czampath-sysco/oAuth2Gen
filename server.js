@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // Author: Chathuranga Sampath
 // Date: 23-06-2025
 // App Name: OAuth Token Generator
@@ -19,7 +20,7 @@
 import express from 'express';
 import session from 'express-session';
 import { AuthorizationCode } from 'simple-oauth2';
-import open from 'open';
+import { spawn } from 'child_process';
 
 const app = express();
 const PORT = 8080;
@@ -243,7 +244,23 @@ app.get('/callback', async (req, res) => {
     }
 });
 
+function openBrowser(url) {
+    const platform = process.platform;
+    let cmd, args;
+    if (platform === 'win32') {
+        cmd = 'cmd';
+        args = ['/c', 'start', '""', url];
+    } else if (platform === 'darwin') {
+        cmd = 'open';
+        args = [url];
+    } else {
+        cmd = 'xdg-open';
+        args = [url];
+    }
+    spawn(cmd, args, { stdio: 'ignore', detached: true }).unref();
+}
+
 app.listen(PORT, async () => {
     console.log(`🚀 Server started on http://localhost:${PORT}`);
-    await open(BASE_URL);
+    openBrowser(BASE_URL);
 });
