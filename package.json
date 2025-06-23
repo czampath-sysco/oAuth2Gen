@@ -1,0 +1,21 @@
+{
+  "name": "oauth2gen",
+  "version": "1.0.0",
+  "main": "getToken.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "open": "^10.1.2",
+    "simple-oauth2": "^5.1.0"
+  }
+}
