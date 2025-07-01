@@ -100,6 +100,7 @@ npm run build:mac   # Mac
 - express-session
 - simple-oauth2
 - axios
+- cors
 
 ## Security
 
