@@ -1,6 +1,6 @@
 # OAuth2Gen
 
-A simple, self-contained OAuth2/OIDC token generator with a modern web UI.
+A simple, self-contained OAuth2/OIDC token hanlder
 
 ---
 
@@ -39,7 +39,30 @@ Your browser will open at [http://localhost:8080](http://localhost:8080).
 
 ---
 
-## Developer Setup & Usage
+## ▶️ Usage
+
+### **One-liner:**
+
+Use following code right after `Bearer `:
+   ```
+   ${await (async () => { try { const token = (await axios.get('http://localhost:8080/token')).data; if (token === '-1') alert("Please refresh token"); return token; } catch (error) { alert("Token Server is not running)"); return ''; } })()}
+   ```
+   
+Example:
+   ```
+         headers: {
+           'Content-Type': 'application/json',
+           Authorization: `Bearer ${await (async () => { try { const token = (await axios.get('http://localhost:8080/token')).data; if (token === '-1') alert("Please refresh token"); return token; } catch (error) { alert("Token Server is not running)"); return ''; } })()}`
+         }
+   ```
+
+### **Or do it Manually**
+
+Goto `http://localhost:8080`, generate token, copy and paste token into your application manually - so dumb! 😬
+
+---
+
+### 🛠️ Developer Setup & Usage
 
 ### Prerequisites
 
@@ -54,15 +77,15 @@ Your browser will open at [http://localhost:8080](http://localhost:8080).
    npm install
    ```
 
-### Development Usage
+#### **To run the npm version of the application:**
 
-1. Start the server:
-   ```
-   npm start
-   ```
-2. Your browser will open at [http://localhost:8080](http://localhost:8080).
-3. Use the web UI as described above.
-4. **New:** You can now request the token directly from the `/token` endpoint in your own applications (e.g., `http://localhost:8080/token`).
+   1. Start the server:
+      ```
+      npm start
+      ```
+   2. Your browser will open at [http://localhost:8080](http://localhost:8080).
+   3. Use the web UI as described above.
+   4. **New:** You can now request the token directly from the `/token` endpoint in your own applications (e.g., `http://localhost:8080/token`).
 
 ### Build Standalone Executables
 
