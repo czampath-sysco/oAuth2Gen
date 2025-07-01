@@ -21,11 +21,14 @@ import express from 'express';
 import session from 'express-session';
 import { AuthorizationCode } from 'simple-oauth2';
 import { spawn } from 'child_process';
+import cors from 'cors';
 
 const app = express();
 const PORT = 8080;
 const BASE_URL = `http://localhost:${PORT}`;
 const REDIRECT_URI = `${BASE_URL}/callback`;
+
+let token;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
@@ -182,6 +185,11 @@ const getResultHtml = (token, error) => `
 </html>
 `;
 
+app.use(cors({
+    origin: /^http:\/\/localhost:\d+$/,
+    credentials: true
+}));
+
 app.get('/', (req, res) => {
     res.send(getFormHtml());
 });
@@ -204,6 +212,14 @@ app.post('/auth', (req, res) => {
     });
 
     res.redirect(authorizationUri);
+});
+
+app.get('/token', (req, res) => {
+    if (token) {
+        res.send(token);
+    } else {
+        res.send('-1');
+    }
 });
 
 app.get('/callback', async (req, res) => {
@@ -230,6 +246,7 @@ app.get('/callback', async (req, res) => {
 
         // Prioritize id_token (OIDC), but fall back to access_token (OAuth2)
         const displayToken = tokenPayload.id_token || tokenPayload.access_token;
+        token = displayToken; // Store the token for later use
         
         if (!displayToken) {
              throw new Error(`Could not find 'id_token' or 'access_token' in the response. Full response: ${JSON.stringify(tokenPayload)}`);
