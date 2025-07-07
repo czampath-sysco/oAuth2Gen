@@ -1,6 +1,6 @@
 # OAuth2Gen
 
-A simple, self-contained OAuth2/OIDC token hanlder
+A simple, self-contained OAuth2/OIDC token handler
 
 ---
 
@@ -29,7 +29,8 @@ Your browser will open at [http://localhost:8080](http://localhost:8080).
    - Scope
 2. Click **Generate Token** and follow the authentication flow.
 3. Your token will be displayed and can be copied for use.
-4. **New:** Applications can now request the token directly from this server via the `/token` endpoint (e.g., `http://localhost:8080/token`). No need to copy and paste the token manually.
+4. **New in v1.1:** Applications can now request the token directly from this server via the `/token` endpoint (e.g., `http://localhost:8080/token`). No need to copy and paste the token manually.
+5. **New in v1.2:** Use the **Root App Control Panel** in the web UI to start, stop, and monitor your local root app (on port 5000). Configure your app directory and manage the app directly from the browser.
 
 > **Note:** Do not change the port or redirect URI unless you know what you’re doing. The redirect URI is always `http://localhost:8080/callback`.
 
@@ -44,12 +45,12 @@ Your browser will open at [http://localhost:8080](http://localhost:8080).
 ### **One-liner:**
 
 Use following code right after `Bearer `:
-   ```
+   ```js
    ${await (async () => { try { const token = (await axios.get('http://localhost:8080/token')).data; if (token === '-1') alert("Please refresh token"); return token; } catch (error) { alert("Token Server is not running)"); return ''; } })()}
    ```
    
 Example:
-   ```
+   ```js
          headers: {
            'Content-Type': 'application/json',
            Authorization: `Bearer ${await (async () => { try { const token = (await axios.get('http://localhost:8080/token')).data; if (token === '-1') alert("Please refresh token"); return token; } catch (error) { alert("Token Server is not running)"); return ''; } })()}`
@@ -73,19 +74,20 @@ Goto `http://localhost:8080`, generate token, copy and paste token into your app
 
 1. Clone or download this repository.
 2. Install dependencies:
-   ```
+   ```sh
    npm install
    ```
 
 #### **To run the npm version of the application:**
 
    1. Start the server:
-      ```
+      ```sh
       npm start
       ```
    2. Your browser will open at [http://localhost:8080](http://localhost:8080).
    3. Use the web UI as described above.
-   4. **New:** You can now request the token directly from the `/token` endpoint in your own applications (e.g., `http://localhost:8080/token`).
+   4. **New in v1.1:** You can now request the token directly from the `/token` endpoint in your own applications (e.g., `http://localhost:8080/token`).
+   5. **New in v1.2:** The web UI now includes a **Root App Control Panel** to manage your local dev app (start/stop/status on port 5000) from the browser.
 
 ### Build Standalone Executables
 
@@ -116,6 +118,14 @@ npm run build:mac   # Mac
 ```
 
 ---
+
+## Features
+
+- OAuth2/OIDC token generation via web UI
+- **Root App Control Panel** (v1.2): Start/stop/status for your dev app (port 5000) from the browser
+- Direct `/token` API endpoint for programmatic access
+- CORS enabled for all localhost ports
+- Modern, responsive UI
 
 ## Dependencies
 
