@@ -147,17 +147,17 @@ const getFormHtml = () => `
                 </div>
                 
                 <div class="flex items-center space-x-3 w-full">
-                    <span class="font-medium text-slate-600">Status:</span>
-                    <div id="app-status-container" class="text-xs font-semibold flex items-center">
+                    <span class="text-sm text-slate-600">Status:</span>
+                    <div id="app-status-container" class="text-sm font-semibold flex items-center">
                         <span id="status-indicator" class="h-2.5 w-2.5 rounded-full mr-2"></span>
                         <span id="status-text"></span>
                     </div>
-                    <div id="start-app-container" class="hidden pt-1 ml-auto w-full flex">
-                        <button id="start-app-btn" class="ml-auto w-full sm:w-auto sm:px-7 justify-center py-1.5 px-3 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                    <div id="start-app-container" class="hidden ml-auto w-full flex">
+                        <button id="start-app-btn" class="ml-auto w-28 justify-center py-1.5 px-3 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
                             Start
                         </button>
                     </div>
-                    <button id="stop-app-btn" class="ml-auto hidden px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700" style="margin-left:auto;">Stop</button>
+                    <button id="stop-app-btn" class="ml-auto hidden w-28 px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700" style="margin-left:auto;">Stop</button>
                 </div>
 
                 <div id="settings-panel" class="settings-panel pt-2 border-t border-slate-200" style="display: none;">
@@ -169,6 +169,7 @@ const getFormHtml = () => `
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            let btnStatus = 'to-be-started';
             const formFields = ['authorizationUrl', 'tokenUrl', 'clientId', 'clientSecret', 'scope', 'appDir'];
             
             formFields.forEach(field => {
@@ -202,6 +203,7 @@ const getFormHtml = () => `
             });
 
             startAppBtn.addEventListener('click', async () => {
+                btnStatus = 'starting';
                 const appDir = appDirInput.value;
                 if (!appDir) {
                     alert('Please configure the application directory path in the settings first.');
@@ -217,15 +219,13 @@ const getFormHtml = () => `
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ appDir }),
                 });
-                
-                setTimeout(checkAppStatus, 2000);
             });
 
             stopAppBtn.addEventListener('click', async () => {
+                btnStatus = 'stopping';
                 stopAppBtn.textContent = 'Stopping...';
                 stopAppBtn.disabled = true;
                 await fetch('/stop-app', { method: 'POST' });
-                setTimeout(checkAppStatus, 2000);
             });
 
             const statusIndicator = document.getElementById('status-indicator');
@@ -236,22 +236,28 @@ const getFormHtml = () => `
                 try {
                     const response = await fetch('/status');
                     const data = await response.json();
-                    startAppBtn.disabled = false;
-                    startAppBtn.textContent = 'Start Root App';
                     if (data.online) {
+                        btnStatus = 'running';
                         statusIndicator.className = 'h-3 w-3 rounded-full mr-2 bg-green-500';
                         statusText.textContent = 'Online at port ${DEV_APP_PORT}';
                         statusText.className = 'text-green-700';
                         startAppContainer.classList.add('hidden');
                         stopAppBtn.classList.remove('hidden');
-                        stopAppBtn.disabled = false;
-                        stopAppBtn.textContent = 'Stop App';
+                        if( btnStatus !== 'starting') {
+                            startAppBtn.disabled = false;
+                            startAppBtn.textContent = 'Start Root App';
+                        }
                     } else {
+                        btnStatus = 'stopped';
                         statusIndicator.className = 'h-3 w-3 rounded-full mr-2 bg-red-500';
                         statusText.textContent = 'Offline';
                         statusText.className = 'text-red-700';
                         startAppContainer.classList.remove('hidden');
                         stopAppBtn.classList.add('hidden');
+                        if( btnStatus !== 'stopping') {
+                            stopAppBtn.disabled = false;
+                            stopAppBtn.textContent = 'Stop App';
+                        }
                     }
                 } catch (error) {
                     console.error('Error checking app status:', error);
@@ -260,7 +266,7 @@ const getFormHtml = () => `
                 }
             }
 
-            setInterval(checkAppStatus, 5000);
+            setInterval(checkAppStatus, 2000);
             checkAppStatus();
         });
     </script>
