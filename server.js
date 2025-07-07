@@ -88,23 +88,23 @@ const getFormHtml = () => `
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .form-label { @apply block text-sm font-medium text-gray-700 mb-1; }
-        .form-label { font-weight: 500; color:rgb(102, 117, 143); padding-left: 4px; }
-        .form-input { width: 100%; height: 40px; padding: 5px; }
-        .form-input { @apply block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm; }
+        .form-label { @apply block text-xs font-medium text-gray-700 mb-0.5; }
+        .form-label { font-weight: 500; color:rgb(102, 117, 143); padding-left: 3px; font-size: 0.93rem; }
+        .form-input { width: 100%; height: 36px; padding: 4px; }
+        .form-input { @apply block w-full px-2.5 py-1.5 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs; }
     </style>
 </head>
 <body class="bg-gray-50">
-    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
+    <div class="min-h-screen flex items-center justify-center py-10 px-3 sm:px-5 lg:px-7">
+        <div class="max-w-2xl w-full space-y-6 p-7 bg-white rounded-lg shadow-md">
             <div>
-                <h2 class="text-center text-3xl font-extrabold text-gray-900">
+                <h2 class="text-center text-2xl font-extrabold text-gray-900">
                     OAuth Token Generator
                 </h2>
             </header>
 
-            <form class="space-y-6 mt-6" id="config-form" action="/auth" method="POST">
-                <div class="rounded-md space-y-4">
+            <form class="space-y-4 mt-4" id="config-form" action="/auth" method="POST">
+                <div class="rounded-md space-y-3">
                     <div>
                         <label for="authorizationUrl" class="form-label">Authorization Endpoint</label>
                         <input id="authorizationUrl" name="authorizationUrl" type="url" required class="form-input">
@@ -127,7 +127,7 @@ const getFormHtml = () => `
                     </div>
                 </div>
                 <div>
-                    <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit" class="group relative w-full flex justify-center py-2.5 px-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Generate Token
                     </button>
                 </div>
@@ -135,9 +135,9 @@ const getFormHtml = () => `
 
             <hr/>
             
-            <div class="relative mt-6 p-6 border rounded-lg bg-slate-50 space-y-4">
+            <div class="relative mt-4 p-4 border rounded-lg bg-slate-50 space-y-3">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-slate-800">Root App Control</h3>
+                    <h3 class="text-base font-bold text-slate-800">Root App Control</h3>
                     <button id="settings-btn" class="text-slate-500 hover:text-slate-800" title="Configure server path">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.608 3.292 0z" />
@@ -146,23 +146,21 @@ const getFormHtml = () => `
                     </button>
                 </div>
                 
-                <div class="flex items-center space-x-4 w-full">
+                <div class="flex items-center space-x-3 w-full">
                     <span class="font-medium text-slate-600">Status:</span>
-                    <div id="app-status-container" class="text-sm font-semibold flex items-center">
-                        <span id="status-indicator" class="h-3 w-3 rounded-full mr-2"></span>
+                    <div id="app-status-container" class="text-xs font-semibold flex items-center">
+                        <span id="status-indicator" class="h-2.5 w-2.5 rounded-full mr-2"></span>
                         <span id="status-text"></span>
                     </div>
-                    <div id="start-app-container" class="hidden pt-2 ml-auto w-full flex">
-                        <button id="start-app-btn" class="ml-auto w-full sm:w-auto sm:px-10 justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                    <div id="start-app-container" class="hidden pt-1 ml-auto w-full flex">
+                        <button id="start-app-btn" class="ml-auto w-full sm:w-auto sm:px-7 justify-center py-1.5 px-3 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
                             Start
                         </button>
                     </div>
-                    <button id="stop-app-btn" class="ml-auto hidden px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" style="margin-left:auto;">Stop</button>
+                    <button id="stop-app-btn" class="ml-auto hidden px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700" style="margin-left:auto;">Stop</button>
                 </div>
 
-
-
-                <div id="settings-panel" class="settings-panel pt-4 border-t border-slate-200" style="display: none;">
+                <div id="settings-panel" class="settings-panel pt-2 border-t border-slate-200" style="display: none;">
                     <label for="appDir" class="form-label">App Directory: </label>
                     <input id="appDir" name="appDir" type="text" class="form-input" placeholder="Paste the full path to your app directory...">
                 </div>
@@ -290,32 +288,32 @@ const getResultHtml = (token, error) => `
     </style>
 </head>
 <body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl w-full space-y-8 p-10 bg-white rounded-xl shadow-2xl">
+    <div class="min-h-screen flex items-center justify-center py-10 px-3 sm:px-5 lg:px-7">
+        <div class="max-w-3xl w-full space-y-6 p-7 bg-white rounded-lg shadow-xl">
             ${error ? `
             <div>
-                <h2 class="text-center text-3xl font-extrabold text-red-600">
+                <h2 class="text-center text-2xl font-extrabold text-red-600">
                     An Error Occurred
                 </h2>
-                <div class="mt-8 p-4 bg-red-50 border border-red-300 text-red-800 rounded-md">
+                <div class="mt-6 p-3 bg-red-50 border border-red-300 text-red-800 rounded-md">
                     <pre>${error}</pre>
                 </div>
             </div>
             ` : `
             <div>
-                <h2 class="text-center text-3xl font-extrabold text-gray-900">
+                <h2 class="text-center text-2xl font-extrabold text-gray-900">
                     Your Token
                 </h2>
-                <p class="mt-2 text-center text-sm text-gray-600">
+                <p class="mt-1 text-center text-xs text-gray-600">
                     Click the button to copy your token to the clipboard.
                 </p>
             </div>
             <div class="relative">
-                 <textarea id="token-display" readonly class="w-full h-64 p-4 font-mono text-sm bg-gray-900 text-green-300 rounded-md focus:outline-none resize-none">${token}</textarea>
-                 <button id="copy-btn" class="absolute top-4 right-4 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-900 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-200">Copy</button>
+                 <textarea id="token-display" readonly class="w-full h-52 p-3 font-mono text-xs bg-gray-900 text-green-300 rounded-md focus:outline-none resize-none">${token}</textarea>
+                 <button id="copy-btn" class="absolute top-3 right-3 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-900 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-200">Copy</button>
             </div>
             `}
-             <div class="mt-6 text-center">
+             <div class="mt-4 text-center">
                  <a href="/" class="font-medium text-indigo-600 hover:text-indigo-500">
                     &larr; Start Over
                 </a>
