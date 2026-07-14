@@ -28,10 +28,10 @@ import path from 'path';
 import fs from 'fs';
 
 const app = express();
-const PORT = 8080;
+const PORT = 3000;
 const DEV_APP_PORT = 5000;
 const BASE_URL = `http://localhost:${PORT}`;
-const REDIRECT_URI = `${BASE_URL}/callback`;
+const REDIRECT_URI = `${BASE_URL}/auth/callback`;
 
 let token;
 
@@ -119,7 +119,7 @@ const getFormHtml = () => `
                     </div>
                     <div>
                         <label for="clientSecret" class="form-label">Client Secret</label>
-                        <input id="clientSecret" name="clientSecret" type="password" required class="form-input">
+                        <input id="clientSecret" name="clientSecret" type="password" class="form-input">
                     </div>
                     <div>
                         <label for="scope" class="form-label">Scope</label>
@@ -355,9 +355,14 @@ app.get('/', (req, res) => {
 app.post('/auth', (req, res) => {
     const { authorizationUrl, tokenUrl, clientId, clientSecret, scope } = req.body;
 
+    const trimmedClientSecret = (clientSecret || '').trim();
+    const clientConfig = trimmedClientSecret
+        ? { id: clientId, secret: trimmedClientSecret }
+        : { id: clientId };
+
     req.session.oauth_config = {
         auth: { tokenHost: new URL(tokenUrl).origin, tokenPath: new URL(tokenUrl).pathname, authorizePath: new URL(authorizationUrl).pathname },
-        client: { id: clientId, secret: clientSecret },
+        client: clientConfig,
     };
 
     const client = new AuthorizationCode(req.session.oauth_config);
@@ -413,7 +418,7 @@ app.post('/stop-app', (req, res) => {
     });
 });
 
-app.get('/callback', async (req, res) => {
+app.get('/auth/callback', async (req, res) => {
     const { code } = req.query;
     const config = req.session.oauth_config;
 
@@ -424,16 +429,39 @@ app.get('/callback', async (req, res) => {
 
     req.session.oauth_config = null;
 
-    const client = new AuthorizationCode(config);
-
-    const tokenParams = {
-        code: code,
-        redirect_uri: REDIRECT_URI,
-    };
-
     try {
-        const accessToken = await client.getToken(tokenParams);
-        const tokenPayload = accessToken.token;
+        let tokenPayload;
+
+        if (config.client.secret) {
+            const client = new AuthorizationCode(config);
+            const tokenParams = {
+                code: code,
+                redirect_uri: REDIRECT_URI,
+            };
+            const accessToken = await client.getToken(tokenParams);
+            tokenPayload = accessToken.token;
+        } else {
+            const tokenEndpoint = `${config.auth.tokenHost}${config.auth.tokenPath}`;
+            const form = new URLSearchParams({
+                grant_type: 'authorization_code',
+                client_id: config.client.id,
+                code: String(code || ''),
+                redirect_uri: REDIRECT_URI,
+            });
+
+            const tokenResponse = await fetch(tokenEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: form.toString(),
+            });
+
+            const tokenJson = await tokenResponse.json();
+            if (!tokenResponse.ok) {
+                throw new Error(`Response Error: ${tokenResponse.status} ${tokenResponse.statusText}\nData: ${JSON.stringify(tokenJson, null, 2)}`);
+            }
+
+            tokenPayload = tokenJson;
+        }
 
         const displayToken = tokenPayload.id_token || tokenPayload.access_token;
         token = displayToken;
